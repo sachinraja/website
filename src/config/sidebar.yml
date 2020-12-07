@@ -5,12 +5,26 @@
   items:
     - label: 'N-API'
       link: '/introduction/napi'
-- label: 'Getting started'
-  link: '/getting-started'
+    - label: 'The history of writing addons'
+      link: '/introduction/history'
+    - label: 'Getting started'
+      link: '/getting-started'
 - label: Concepts
   items:
     - label: 'Env'
       link: '/concepts/env'
+    - label: 'JS Values'
+      link: '/concepts/js-values'
+    - label: 'Task'
+      link: '/concepts/task'
+    - label: 'Thread safe function'
+      link: '/concepts/thread-safe-function'
+    - label: 'External Object'
+      link: '/concepts/external'
+    - label: 'Wrap native value to Object'
+      link: '/concepts/wrap'
+    - label: 'Using with Tokio'
+      link: '/concepts/tokio'
 - label: Recipes
   items:
     - label: 'Creating project'
