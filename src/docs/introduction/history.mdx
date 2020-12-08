@@ -2,3 +2,50 @@
 title: 'History'
 description: The history of writing NodeJS native addons.
 ---
+
+> Some contents are borrowed from https://xcoder.in/2017/07/01/nodejs-addon-history/
+
+# Using `v8 C++` headers directly
+
+In very early ages, developers were using `v8/NodeJS C++` headers directly to build NodeJS native addon.
+
+```cpp
+Handle<Value> Echo(const Arguments& args)
+{
+    HandleScope scope;
+
+    if(args.Length() < 1)
+    {
+        ThrowException(
+            Exception::TypeError(
+                String::New("Wrong number of arguments.")));
+        return scope.Close(Undefined());
+    }
+
+    return scope.Close(args[0]);
+}
+
+void Init(Handle<Object> exports)
+{
+    exports->Set(String::NewSymbol("echo"),
+        FunctionTemplate::New(Echo)->GetFunction());
+}
+```
+
+This code snippets define a simple NodeJS function: `echo`. It always return the first argument passed in. And it equals to this simple `NodeJS` codes:
+
+```js
+exports.echo = function () {
+  if (arguments.length < 1) throw new Error('Wrong number of arguments.')
+  return arguments[0]
+}
+```
+
+If you publish these codes as a `npm` package, it can only work with `node 0.10.x`.
+
+But why? The short answer is **_v8 and NodeJS api changes fast._** For example in `NodeJS 6.x`, the way of define `JsFunction` changed:
+
+```cpp
+Handle<Value> Echo(const Arguments& args);    // 0.10.x
+void Echo(FunctionCallbackInfo<Value>& args); // 6.x
+```

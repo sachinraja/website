@@ -5,7 +5,7 @@
   items:
     - label: 'N-API'
       link: '/introduction/napi'
-    - label: 'The history of writing addons'
+    - label: 'The history of NodeJS addons'
       link: '/introduction/history'
     - label: 'Getting started'
       link: '/getting-started'
