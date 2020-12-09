@@ -6,11 +6,12 @@ description: The history of writing NodeJS native addons.
 > Some contents are borrowed from https://xcoder.in/2017/07/01/nodejs-addon-history/
 
 ## The dark age: `node-waf`
+
 Before NodeJS 0.8, developers used the `node-waf` to build their library. Of course the `node-waf` is not the node-waf in npm registry, the original `node-waf` has been fallen to disrepair for years.
 
 This thing was configured with a file named `wscript`. From NodeJS 0.8, it had `node-gyp` builtin, so people didn't need wscript anymore.
 
-But because this temporary shortage, many libraries using C++ to build NodeJS addon contains both `binding.gyp` and  `wscript` in that time.
+But because this temporary shortage, many libraries using C++ to build NodeJS addon contains both `binding.gyp` and `wscript` in that time.
 
 You can see files back to that age in this library [node-mysql-libmysqlclient](https://github.com/Sannis/node-mysql-libmysqlclient/tree/9545ea7485fcc8b07b7c56c5ec3575938bfd4e5f). For node-gyp support it had `binding.gyp` and still preserved the `wscript` file.
 
@@ -62,8 +63,30 @@ void Echo(FunctionCallbackInfo<Value>& args); // 6.x
 So native packages developed in this way can only support only few versions of NodeJS, when the API of `v8` or `NodeJS` changed, these packages couldn't be compiled any more. And if maintainers updated the API to latest NodeJS and `v8`, the package couldn't be compiled under the older NodeJS, again.
 
 ## The Castle age: Native Abstractions for Node.js
+
 Back to 2013, with the fast iteration of the `NodeJS` and `v8`, packages used the old way to build native addon grow with pains. And [`NAN`](https://github.com/nodejs/nan) came out. It's shorten for **Native Abstractions for Node.js**.
 
 > NAN was built by [Rod Vagg](https://github.com/rvagg) and then [Benjamin Byholm](https://github.com/kkoopa). NAN was belong to Rod Vaggs' GitHub account from the beginning, and transferred to `io.js` organization in the dark age of `NodeJS` split to `io.js` and `NodeJS`；After they got back together，NAN finally transferred into `NodeJS` organization.
 
-After NAN came out, the develop experience in native addon packages came to ***the Castle age***, and last to nowadays.
+After NAN came out, the develop experience in native addon packages came to **_the Castle age_**, and last to nowadays.
+
+It's still a litter abstract for the full description of NAN: **_Native abstractions for NodeJS_**. To be specifically, it's a bunch of **_C macros_**. You can define a JavaScript function like this for example:
+
+```cpp
+NAN_METHOD(Echo)
+{
+}
+```
+
+The macro of NAN will be expanded to different CPP codes in during compiling according different NodeJS version:
+
+```cpp
+Handle<Value> Echo(const Arguments& args);    // 0.10.x
+void Echo(FunctionCallbackInfo<Value>& args); // 6.x
+```
+
+`NAN_METHOD` will be expanded by NAN to the codes snippets below.
+
+There are tons of macros in NAN rather than `NAN_METHOD`, developers can using it to do almost anything.
+
+For example the `Nan::HandleScope` allow you to declare **_handle scope_**, `Nan::AsyncWorker` allow you to spawn task on `libuv`.
